@@ -1,84 +1,66 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
-
 import React from 'react';
-import {
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  View,
-  Text,
-  StatusBar,
-} from 'react-native';
+import { SafeAreaView, ScrollView } from 'react-native';
+import { Card, CheckBox, Input } from 'react-native-elements';
+import PreHospital from './src/pages/PreHospital';
+import SuspiciousProblems from './src/pages/SuspiciousProblems';
+import Syntoms from './src/pages/Syntoms';
+import MultipleChoicesCard from './src/components/MultipleChoicesCard';
+import BaseData from './src/pages/BaseData';
 
-import {
-  Header,
-  LearnMoreLinks,
-  Colors,
-  DebugInstructions,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-import { Card, CheckBox, Input, Divider } from 'react-native-elements';
+class App extends React.Component {
+  state = {
+    occurrencyTypes: [],
+    suspiciousProblems: [],
+    syntoms: [],
+    carryMode: [],
+  };
 
-const App = () => {
-  return (
-    <>
-      <StatusBar barStyle="dark-content" />
+  handleCheckOptions = (fieldName, option, checked) => {
+    this.setState(state => {
+      const data = checked
+        ? [...state[fieldName], option]
+        : state[fieldName].filter(x => x !== option);
+      return { [fieldName]: data };
+    });
+  };
+
+  render() {
+    const {
+      occurrencyTypes,
+      suspiciousProblems,
+      syntoms,
+      carryMode,
+    } = this.state;
+    return (
       <SafeAreaView>
-        <ScrollView style={styles.scrollView}>
-          <Card
-            title="Tipo de Ocorrência (PRÉ - HOSPITALAR)"
-            containerStyle={styles.occurrenceType}>
-            <CheckBox title="Causado por animais" checked />
-            <CheckBox title="Com meio de transporte" checked />
-            <CheckBox title="Desmoronamento/Deslizamento" checked />
-            <CheckBox title="Emergência médica" checked />
-            <CheckBox title="Queda Altura > 3m" checked />
-            <CheckBox title="Tentativa de suicídio" checked />
-            <CheckBox title="Queda própria altura" checked />
-            <CheckBox title="Afogamento" checked />
-            <CheckBox title="Agressão" checked />
-            <CheckBox title="Atropelamento" checked />
-            <CheckBox title="Choque Elétrico" checked />
-            <CheckBox title="Desabamento" checked />
-            <CheckBox title="Doméstico" checked />
-            <CheckBox title="Esportivo" checked />
-          </Card>
-          <Card title="Problemas Encontrados Suspeitos">
-            <CheckBox title="Psiquiátrico" />
-            <CheckBox title="Óbito" />
-            <CheckBox title="Diabetes" />
-            <CheckBox title="Hiperglicemia" />
-            <CheckBox title="Hipoglicemia" />
-            <Divider />
-            <CheckBox title="Outros" />
-            <Input placeholder="Qual?" errorStyle={{ color: 'red' }} />
-            <Divider />
-          </Card>
-          <Card title="Sinais e Sintomas">
-            <CheckBox title="Abdomem sensível ou rígido" />
-            <CheckBox title="Afundamento de crânio" />
-            <CheckBox title="Agitação" />
-            <CheckBox title="Amnésia" />
-            <CheckBox title="Apineia" />
-            <CheckBox title="Bradicardia" />
-            <CheckBox title="Bradipineia" />
-            <CheckBox title="Bronco-aspirando" />
-            <CheckBox title="Cefaleia" />
-            <CheckBox title="Cianose" />
-            <CheckBox title="Convulsão" />
-            <CheckBox title="Desvio de Traqueia" />
-          </Card>
-          <Card title="Forma de Condução">
-            <CheckBox title="Deitada" />
-            <CheckBox title="Semi-Sentada" />
-            <CheckBox title="Sentada" />
-          </Card>
+        <ScrollView>
+          <BaseData />
+          <PreHospital
+            selectedOptions={occurrencyTypes}
+            onSelectOption={(option, checked) =>
+              this.handleCheckOptions('occurrencyTypes', option, checked)
+            }
+          />
+          <SuspiciousProblems
+            selectedOptions={suspiciousProblems}
+            onSelectOption={(option, checked) =>
+              this.handleCheckOptions('suspiciousProblems', option, checked)
+            }
+          />
+          <Syntoms
+            selectedOptions={syntoms}
+            onSelectOption={(option, checked) =>
+              this.handleCheckOptions('syntoms', option, checked)
+            }
+          />
+          <MultipleChoicesCard
+            title="Forma de Condução"
+            options={['Deitada', 'Semi-Sentada', 'Sentada']}
+            selectedOptions={carryMode}
+            onSelectOption={(option, checked) =>
+              this.handleCheckOptions('carryMode', option, checked)
+            }
+          />
           <Card title="Vítima era:">
             <CheckBox title="Ciclista" />
             <CheckBox title="Condutor Moto" />
@@ -110,17 +92,8 @@ const App = () => {
           </Card>
         </ScrollView>
       </SafeAreaView>
-    </>
-  );
-};
-
-const styles = StyleSheet.create({
-  scrollView: {
-    backgroundColor: Colors.lighter,
-  },
-  occurrenceType: {
-    flex: 1,
-  },
-});
+    );
+  }
+}
 
 export default App;
